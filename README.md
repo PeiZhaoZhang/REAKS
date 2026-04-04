@@ -4,6 +4,7 @@
 # Resource-Efficient Adaptive Keyframe Selection for Scalable 3D Gaussian Splatting
 
 [![Journal: The Visual Computer](https://img.shields.io/badge/Journal-The%20Visual%20Computer-blue)](https://www.springer.com/journal/371)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19414672.svg)](https://doi.org/10.5281/zenodo.19414672)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
 
 > **Notice**: This repository provides the official implementation of **REAKS**, a framework directly related to the manuscript submitted to *The Visual Computer*. Users are encouraged to cite the relevant work as outlined in the [Citation](#-citation) section.
