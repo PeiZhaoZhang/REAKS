@@ -67,7 +67,7 @@ If you find this work useful for your research, please cite our manuscript:
 @article{zhang2026reaks,
   title={Resource-Efficient Adaptive Keyframe Selection for Scalable 3D Gaussian Splatting},
   author={Zhang, Peizhao and others},
-  journal={The Visual Computer (Under Review)},
+  journal={The Visual Computer (Submitted)},
   year={2026},
   note={Directly related to the open-source implementation at https://github.com/PeiZhaoZhang/REAKS}
 }
