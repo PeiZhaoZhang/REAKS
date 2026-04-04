@@ -48,7 +48,7 @@ To replicate the efficiency benchmarks reported in our paper:
 2. **Reconstruction (3DGS Training)**:
    Use the selected keyframes as input for the 3DGS training pipeline:
    ```bash
-   python train.py -s <path_to_selected_keyframes> --model_path <output_path>
+   python train.py -s <path to COLMAP or NeRF Synthetic dataset>
    ```
 
 ---
