@@ -40,6 +40,7 @@ class Scene:
         self.train_cameras = {}
         self.test_cameras = {}
 
+# ... 前面的代码保持不变 ...
         if os.path.exists(os.path.join(args.source_path, "sparse")):
             scene_info = sceneLoadTypeCallbacks["Colmap"](args.source_path, args.images, args.depths, args.eval, args.train_test_exp)
         elif os.path.exists(os.path.join(args.source_path, "transforms_train.json")):
@@ -48,6 +49,29 @@ class Scene:
         else:
             assert False, "Could not recognize scene type!"
 
+        # ==========================================================
+        # [REAKS 定制逻辑]: 强行过滤训练集，保留完整的测试集
+        # ==========================================================
+        if args.eval:
+            filtered_dir = os.path.join(args.source_path, "images") 
+            
+            if os.path.exists(filtered_dir):
+                valid_names = set([os.path.splitext(f)[0] for f in os.listdir(filtered_dir)])
+                
+                original_train_count = len(scene_info.train_cameras)
+                
+                # 核心过滤：只保留在 images 文件夹中存在的训练图片
+                scene_info.train_cameras = [c for c in scene_info.train_cameras if c.image_name in valid_names]
+                
+                print(f"\n=======================================================")
+                print(f"✅ [REAKS 数据对齐] 测试集使用原始全量数据的 1/8 (数量: {len(scene_info.test_cameras)})")
+                print(f"✅ [REAKS 数据对齐] 训练集已根据 /images 文件夹完成过滤: {original_train_count} -> {len(scene_info.train_cameras)}")
+                print(f"=======================================================\n")
+        # ==========================================================
+
+        if not self.loaded_iter:
+            with open(scene_info.ply_path, 'rb') as src_file, open(os.path.join(self.model_path, "input.ply") , 'wb') as dest_file:
+                dest_file.write(src_file.read())
         if not self.loaded_iter:
             with open(scene_info.ply_path, 'rb') as src_file, open(os.path.join(self.model_path, "input.ply") , 'wb') as dest_file:
                 dest_file.write(src_file.read())
