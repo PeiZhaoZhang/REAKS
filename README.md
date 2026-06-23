@@ -187,12 +187,12 @@ For an original-frame baseline with the same frame budget, replace the REAKS com
 
 ## Dataset Reproduction Commands
 
-The main revision pipeline is [major_revision/run_reviewer3_pipeline.sh](major_revision/run_reviewer3_pipeline.sh). It reproduces the REAKS-vs-original timing, SfM, 3DGS, rendering, metric, and summary-table workflow. The script defaults to the older `gsplat` name internally, so pass `CONDA_ENV=gs` for this environment.
+The main reproducibility pipeline is [tools/run_reviewer3_pipeline.sh](tools/run_reviewer3_pipeline.sh). It reproduces the REAKS-vs-original timing, SfM, 3DGS, rendering, metric, and summary-table workflow. The script defaults to the older `gsplat` name internally, so pass `CONDA_ENV=gs` for this environment.
 
 ### Mip-NeRF 360
 
 ```bash
-cd /root/project/gaussian-splatting/major_revision
+cd /root/project/gaussian-splatting/tools
 
 CONDA_ENV=gs \
 DATA_ROOT_360=/root/project/data/360_v2 \
@@ -213,7 +213,7 @@ bash run_reviewer3_pipeline.sh
 ### Tanks and Temples
 
 ```bash
-cd /root/project/gaussian-splatting/major_revision
+cd /root/project/gaussian-splatting/tools
 
 CONDA_ENV=gs \
 DATA_ROOT_360=/root/project/data/360_v2 \
@@ -281,7 +281,7 @@ python metrics.py \
   -m "$RUN/output"
 ```
 
-For the full C3VD table, repeat the same command block for each sequence and aggregate the resulting metric JSON/CSV files with the same schema as `major_revision/aggregate_experiment3_metrics.py`.
+For the full C3VD table, repeat the same command block for each sequence and aggregate the resulting metric JSON/CSV files with the same schema as `tools/aggregate_experiment3_metrics.py`.
 
 ## Tables and Figures
 
@@ -290,25 +290,25 @@ Regenerate the main timing and quality CSV/JSON files:
 ```bash
 conda activate gs
 cd /root/project/gaussian-splatting
-python major_revision/aggregate_experiment3_metrics.py
+python tools/aggregate_experiment3_metrics.py
 ```
 
 Primary outputs:
 
 ```text
-major_revision/experiment3_tables/experiment3_per_scene_metrics.csv
-major_revision/experiment3_tables/experiment3_dataset_summary.csv
-major_revision/experiment3_tables/experiment3_pipeline_time.csv
-major_revision/experiment3_tables/experiment3_percentage_changes.csv
-major_revision/experiment3_tables/experiment3_ne_metrics.csv
-major_revision/experiment3_tables/experiment3_ne_summary.csv
-major_revision/experiment3_tables/missing_fields_report.csv
+tools/experiment3_tables/experiment3_per_scene_metrics.csv
+tools/experiment3_tables/experiment3_dataset_summary.csv
+tools/experiment3_tables/experiment3_pipeline_time.csv
+tools/experiment3_tables/experiment3_percentage_changes.csv
+tools/experiment3_tables/experiment3_ne_metrics.csv
+tools/experiment3_tables/experiment3_ne_summary.csv
+tools/experiment3_tables/missing_fields_report.csv
 ```
 
 Regenerate the stronger-baseline comparison figure and table for the Mip-NeRF 360 bicycle scene:
 
 ```bash
-cd /root/project/gaussian-splatting/major_revision
+cd /root/project/gaussian-splatting/tools
 
 CONDA_ENV=gs CUDA_DEVICE=0 MAX_STEPS=30000 SEED=42 RUN_TRAIN=1 bash run_reviewer4_baselines.sh
 ```
@@ -316,25 +316,25 @@ CONDA_ENV=gs CUDA_DEVICE=0 MAX_STEPS=30000 SEED=42 RUN_TRAIN=1 bash run_reviewer
 Outputs:
 
 ```text
-major_revision/reviewer4_baselines/reviewer4_8method_metrics.csv
-major_revision/reviewer4_baselines/reviewer4_8method_summary.csv
-major_revision/reviewer4_baselines/reviewer4_8method_table.tex
-major_revision/reviewer4_baselines/reviewer4_8method_visual_comparison.png
-major_revision/reviewer4_baselines/reviewer4_8method_visual_comparison.pdf
-major_revision/reviewer4_baselines/reviewer4_best_view_metrics.csv
+tools/reviewer4_baselines/reviewer4_8method_metrics.csv
+tools/reviewer4_baselines/reviewer4_8method_summary.csv
+tools/reviewer4_baselines/reviewer4_8method_table.tex
+tools/reviewer4_baselines/reviewer4_8method_visual_comparison.png
+tools/reviewer4_baselines/reviewer4_8method_visual_comparison.pdf
+tools/reviewer4_baselines/reviewer4_best_view_metrics.csv
 ```
 
 ## Selected-Frame Indices and Logs
 
-The repository stores selected-frame records and timing artifacts so reviewers can audit the exact frames and resource measurements.
+The reviewer4 baseline script writes selected-frame records and timing artifacts to these paths so reviewers can audit the exact frames and resource measurements.
 
 ```text
-major_revision/reviewer4_baselines/pose_fps/selected_images.txt
-major_revision/reviewer4_baselines/pose_fps/selected_images.json
-major_revision/reviewer4_baselines/coverage_greedy/selected_images.txt
-major_revision/reviewer4_baselines/coverage_greedy/selected_images.json
-major_revision/reviewer4_baselines/sfm_covisibility_greedy/selected_images.txt
-major_revision/reviewer4_baselines/sfm_covisibility_greedy/selected_images.json
+tools/reviewer4_baselines/pose_fps/selected_images.txt
+tools/reviewer4_baselines/pose_fps/selected_images.json
+tools/reviewer4_baselines/coverage_greedy/selected_images.txt
+tools/reviewer4_baselines/coverage_greedy/selected_images.json
+tools/reviewer4_baselines/sfm_covisibility_greedy/selected_images.txt
+tools/reviewer4_baselines/sfm_covisibility_greedy/selected_images.json
 ```
 
 Pipeline-created selected frames and logs are stored under each run directory:
@@ -353,14 +353,14 @@ Pipeline-created selected frames and logs are stored under each run directory:
 /root/project/data/<dataset>/<scene>/<OUT_TAG>/<method>/seed_<seed>/results/stats/val_step29999.json
 ```
 
-Project-level long logs are also included:
+Project-level long logs are written to these paths when the full pipelines are run:
 
 ```text
-major_revision/recon_major_3_seed42.log
-major_revision/recon_major_3_double_seed42.log
-major_revision/recon_major_3_double_single_gpu_seed42.log
-major_revision/reviewer4_baselines/*/train.log
-major_revision/reviewer4_baselines/*/training_elapsed_sec.txt
+tools/recon_major_3_seed42.log
+tools/recon_major_3_double_seed42.log
+tools/recon_major_3_double_single_gpu_seed42.log
+tools/reviewer4_baselines/*/train.log
+tools/reviewer4_baselines/*/training_elapsed_sec.txt
 ```
 
 The SfM time is reported by `stage_timings.csv` and summarized in `experiment3_pipeline_time.csv`. Peak VRAM is reported in `results/stats/pipeline_timings.json` and summarized as `max_gpu_mem_gb` in `experiment3_per_scene_metrics.csv`.
@@ -395,13 +395,13 @@ python metrics.py -m "$DEMO/run/output"
 
 ## Reproducibility Checklist
 
-A supplemental checklist is provided in [major_revision/reproducibility_checklist.md](major_revision/reproducibility_checklist.md). Summary:
+A supplemental checklist is provided in [tools/reproducibility_checklist.md](tools/reproducibility_checklist.md). Summary:
 
 | Item requested by reviewer | Repository location |
 | --- | --- |
 | Fixed release tag and commit hash | This README, `v1.0.0-reproducibility`, commit `52f95b268129bd2857a6172ca2f4c12506567ec2` |
 | Complete environment with CUDA/PyTorch | [environment.yml](environment.yml) |
-| Scripts for each table and figure | [major_revision/run_reviewer3_pipeline.sh](major_revision/run_reviewer3_pipeline.sh), [major_revision/aggregate_experiment3_metrics.py](major_revision/aggregate_experiment3_metrics.py), [major_revision/run_reviewer4_baselines.sh](major_revision/run_reviewer4_baselines.sh) |
+| Scripts for each table and figure | [tools/run_reviewer3_pipeline.sh](tools/run_reviewer3_pipeline.sh), [tools/aggregate_experiment3_metrics.py](tools/aggregate_experiment3_metrics.py), [tools/run_reviewer4_baselines.sh](tools/run_reviewer4_baselines.sh) |
 | Commands for Tanks and Temples, Mip-NeRF 360, C3VD | Dataset reproduction sections above |
 | Selected-frame index files | `selected_images.txt/json`, run-level `images/`, `selection_metadata.json`, and `reaks_timing_metadata.json` |
 | SfM timing and VRAM logs | `stage_timings.csv`, COLMAP logs, `pipeline_timings.json`, `experiment3_pipeline_time.csv` |
